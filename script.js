@@ -6,12 +6,14 @@ const cartTotal           = document.getElementById("cart-total")
 const checkoutBtn         = document.getElementById("checkout-btn")
 const closeModalBtn       = document.getElementById("close-modal-btn")
 const cartCounter         = document.getElementById("cart-count")
+const nameInput           = document.getElementById("name")
+const nameWarn            = document.getElementById("name-warn")
 const addressInput        = document.getElementById("address")
 const addressWarn         = document.getElementById("address-warn")
 
 //Colocar os horários em formato de 24HRS
-const openRestaurant      = 18
-const closeRestaurant     = 22
+const openRestaurant      = 15
+const closeRestaurant     = 23
 const spanItem            = document.getElementById("date-span")
 const isOpen              = checkRestaurantOpen();
 
@@ -23,7 +25,7 @@ cartBtn.addEventListener("click", function() {
     cartModal.style.display = "flex"
 })
 
-//Fechando o Modal do Carrinho quando clicarr fora dele
+//Fechando o Modal do Carrinho quando clicar fora dele
 cartModal.addEventListener("click", function(event) {
     if(event.target === cartModal){
         cartModal.style.display = "none"
@@ -87,19 +89,24 @@ function updateCartModal(){
             <div>
                 <p class="font-bold">${item.name}</p>
                 <p>Qtd:${item.quantity}</p>
-                <p class="font-medium mt-2">R$ ${item.price.toFixed(2)}</p>
+                <p class="font-medium mt-2">R$ ${(item.price * item.quantity).toFixed(2)}</p>
             </div>
 
-            <button class="remove-from-cart-btn" data-name="${item.name}">
-                Remover
-            </button>
+            <div>
+                <button class="add-from-cart-btn hover:font-bold hover:text-green-500" data-name="${item.name}">
+                    + Adcionar
+                </button>
+
+                <button class="remove-from-cart-btn hover:font-bold hover:text-red-500" data-name="${item.name}">
+                    Remover -
+                </button>
+            </div>
         </div>
         `
 
         total += item.price * item.quantity;
 
         cartItemsContainer.appendChild(cartItemElement)
-
     })
 
     cartTotal.textContent = total.toLocaleString("pt-BR", {
@@ -111,15 +118,22 @@ function updateCartModal(){
 
 }
 
-//Função para Remover Itens do Carrinho
+//Função para Remover e Adicionar Itens do Carrinho
 cartItemsContainer.addEventListener("click", function(event) {
     if(event.target.classList.contains("remove-from-cart-btn")){
         const name = event.target.getAttribute("data-name")
 
         removeItemCart(name);
     }
+
+    if(event.target.classList.contains("add-from-cart-btn")){
+        const name = event.target.getAttribute("data-name")
+
+        addItemCart(name);
+    }
 })
 
+//Removendo
 function removeItemCart(name){
     const index = cart.findIndex(item => item.name === name);
 
@@ -137,12 +151,38 @@ function removeItemCart(name){
     }
 }
 
+//Adicionando
+function addItemCart(name){
+    const index = cart.findIndex(item => item.name === name);
+
+    if(index !== -1){
+        const item = cart[index];
+
+        if(item.quantity !== 0){
+            item.quantity += 1;
+            updateCartModal();
+            return;
+        }
+    }
+}
+
+//Pegando o nome digitado no Carrrinho
+nameInput.addEventListener("input", function(event) {
+    let inputValueName = event.target.value;
+
+    //Verificando se tem algum Nome
+    if(inputValueName !== ""){
+        nameInput.classList.remove("border-red-500");
+        nameWarn.classList.add("hidden");
+    }
+})
+
 //Pegando o endereço digitado no Carrrinho
 addressInput.addEventListener("input", function(event) {
-    let inputValue = event.target.value;
+    let inputValueAddress = event.target.value;
 
-    //Verificando se tem Endereço
-    if(inputValue !== ""){
+    //Verificando se tem algum Endereço
+    if(inputValueAddress !== ""){
         addressInput.classList.remove("border-red-500");
         addressWarn.classList.add("hidden");
     }
@@ -169,8 +209,13 @@ checkoutBtn.addEventListener("click", function() {
     }
 
     if(cart.length === 0) return;
+    if(nameInput.value === ""){
+        nameWarn.classList.remove("hidden");
+        nameInput.classList.add("border-red-500");
+        return;
+    }
+
     if(addressInput.value === ""){
-        
         addressWarn.classList.remove("hidden");
         addressInput.classList.add("border-red-500");
         return;
@@ -179,14 +224,15 @@ checkoutBtn.addEventListener("click", function() {
     // Enviando o pedido via whatsapp
     const cartItems = cart.map((item) => {
         return (
-            ` ${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price} |`
+            `*_${item.name}_*\n*Quantidade:* ${item.quantity}\n*Preço:* R$${(item.price * item.quantity).toFixed(2)}\n\n------------------------------\n\n`
         )
     }).join("")
 
     const message = encodeURIComponent(cartItems)
     const phone   = "41995287020"
 
-    window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
+    //TODO: Incrementar um código para informar o VALOR TOTAL do pedido na mensagem
+    window.open(`https://wa.me/${phone}?text=*Nome p/ Entrgega:*%0d%0a${nameInput.value}%0d%0a%0d%0a%0d%0a*Itens:*%0d%0a%0d%0a${message}*Total:*%0d%0a*Endereço:* ${addressInput.value}`, "_blank")
 
     cart = [];
     updateCartModal();

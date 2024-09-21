@@ -44,7 +44,7 @@
 
             <div class="bg-green-600 px-4 py-1 rounded-lg mt-5" id="date-span">
                 <span class="text-white font-medium">
-                    Seg à Dom - 18:00 às 22:00
+                    Seg à Dom - 15:00 às 23:00
                 </span>
             </div>
         </div>
@@ -258,6 +258,16 @@
 
             <!-- Final do Carrinho -->
             <p class="font-bold">Total: <span id="cart-total">0,00</span></p>
+
+            <p class="font-bold mt-5">Seu Nome</p>
+            <input 
+            type="text"
+            placeholder="Digite seu Nome..."
+            id="name"
+            class="w-full border-2 p-1 rounded my-1"
+            />
+            <p class="text-red-500 hidden" id="name-warn">DIGITE UM NOME PARA A ENTREGA</p>
+
             <p class="font-bold mt-5">Endereço de Entrega</p>
             <input 
             type="text"
@@ -265,8 +275,7 @@
             id="address"
             class="w-full border-2 p-1 rounded my-1"
             />
-
-            <p class="text-red-500 hidden" id="address-warn">Digite seu Endereço Completo</p>
+            <p class="text-red-500 hidden" id="address-warn">DIGITE SEU ENDEREÇO</p>
 
             <div class="flex items-center justify-between mt-5 w-full">
                 <button id="close-modal-btn">FECHAR</button>
