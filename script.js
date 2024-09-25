@@ -12,7 +12,7 @@ const addressInput        = document.getElementById("address")
 const addressWarn         = document.getElementById("address-warn")
 
 //Colocar os horários em formato de 24HRS
-const openRestaurant      = 15
+const openRestaurant      = 11
 const closeRestaurant     = 23
 const spanItem            = document.getElementById("date-span")
 const isOpen              = checkRestaurantOpen();
@@ -81,6 +81,7 @@ function updateCartModal(){
     let total = 0;
     
     cart.forEach(item => {
+
         const cartItemElement = document.createElement("div");
         cartItemElement.classList.add("flex", "justify-between", "mb-4", "flex-col")
 
@@ -201,7 +202,7 @@ checkoutBtn.addEventListener("click", function() {
             position: "right", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-              background: "#ef4444",
+            background: "#ef4444",
             },
         }).showToast();
 
@@ -224,15 +225,17 @@ checkoutBtn.addEventListener("click", function() {
     // Enviando o pedido via whatsapp
     const cartItems = cart.map((item) => {
         return (
-            `*_${item.name}_*\n*Quantidade:* ${item.quantity}\n*Preço:* R$${(item.price * item.quantity).toFixed(2)}\n\n------------------------------\n\n`
+            `*_${item.name}_*\n*Quantidade:* ${item.quantity}\n*Preço:* R$${(item.price * item.quantity).toFixed(2)}\n------------------------------\n`
         )
     }).join("")
 
     const message = encodeURIComponent(cartItems)
     const phone   = "41995287020"
+    let totalCompra = 0
+    
+    totalCompra = cartTotal.textContent
 
-    //TODO: Incrementar um código para informar o VALOR TOTAL do pedido na mensagem
-    window.open(`https://wa.me/${phone}?text=*Nome p/ Entrgega:*%0d%0a${nameInput.value}%0d%0a%0d%0a%0d%0a*Itens:*%0d%0a%0d%0a${message}*Total:*%0d%0a*Endereço:* ${addressInput.value}`, "_blank")
+    window.open(`https://wa.me/${phone}?text=*Nome p/ Entrgega:*%0d%0a${nameInput.value}%0d%0a%0d%0a*Itens:*%0d%0a${message}*Total:* ${totalCompra}%0d%0a*Endereço:* ${addressInput.value}`, "_blank")
 
     cart = [];
     updateCartModal();
