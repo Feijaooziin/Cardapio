@@ -13,7 +13,7 @@ const addressWarn         = document.getElementById("address-warn")
 
 //Colocar os horários em formato de 24HRS
 const openRestaurant      = 11
-const closeRestaurant     = 24
+const closeRestaurant     = 23
 const spanItem            = document.getElementById("date-span")
 const isOpen              = checkRestaurantOpen();
 
